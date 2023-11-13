@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TowerVision : MonoBehaviour
 {
-    [SerializeField] private float _radius;
+    [SerializeField] private float _range;
     [SerializeField] private SphereCollider _collider;
 
     private List<Enemy> _targets = new List<Enemy>();
@@ -17,7 +17,7 @@ public class TowerVision : MonoBehaviour
 
     private void Start()
     {
-        _collider.radius = _radius;
+        _collider.radius = _range;
         CurrentTarget = null;
     }
 
