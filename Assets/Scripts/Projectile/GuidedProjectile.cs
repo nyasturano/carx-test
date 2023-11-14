@@ -9,14 +9,17 @@ public class GuidedProjectile : Projectile {
 
     private void Update()
     {
-		Movement();
+		if (Target) 
+		{
+			Movement();
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
     }
 
     public void Movement () {
-		if (Target == null) {
-			Destroy(gameObject);
-			return;
-		}
 
 		Vector3 direction = (Target.transform.position - transform.position).normalized;
 		Vector3 offset = direction * (_speed * Time.deltaTime);

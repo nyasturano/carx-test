@@ -4,8 +4,6 @@ using UnityEngine;
 
 public abstract class Tower : MonoBehaviour
 {
-	public event Action OnRecharged;
-
 	[SerializeField] private float _shootInterval = 0.5f;
 	[SerializeField] protected TowerVision _vision;
 	[SerializeField] protected GameObject _projectilePrefab;
@@ -13,10 +11,11 @@ public abstract class Tower : MonoBehaviour
 
 	private bool _isReady = true;
 
+	public event Action OnRecharged;
+
     protected virtual void Start()
     {
         OnRecharged += TryShoot;
-		_vision.OnNewTarget += TryShoot;
 	}
 
 	private IEnumerator Recharge()

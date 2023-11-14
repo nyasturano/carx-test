@@ -1,30 +1,33 @@
-using System;
 using UnityEngine;
 
 public class CannonTower : Tower
 {
     [SerializeField] private float _rotationSpeed = 1.0f;
     [SerializeField] private float _projectileSpeed = 0.2f;
-    [SerializeField] private float _targetingThreshold = 1f;
+    [SerializeField] private float _targetingThreshold = 1f; 
     
     [SerializeField] private GameObject _cannon;
     [SerializeField] private GameObject _cannonHub;
 
-
     private Vector3 _direction;
     private Vector3 _offsetDirection;
-    private float _speedRatio;
     private Vector3 _axis;
+    private float _speedRatio;
 
     private bool _isTargeted = false;
 
     protected override void Start()
     {
         base.Start();
+
         _vision.OnNewTarget += () => {
             _isTargeted = false;
-            RecalculateConstants();
+            if (_vision.CurrentTarget)
+            {
+                RecalculateConstants();
+            }
         };
+
     }
 
     private void Update()
@@ -45,10 +48,10 @@ public class CannonTower : Tower
         if (_speedRatio <= 1)
         {
             _direction = (_vision.CurrentTarget.transform.position - _shootPoint.transform.position).normalized;
-
+            
             float angleB = Vector3.SignedAngle(-_direction, _vision.CurrentTarget.transform.forward, _axis);
             float angleA = Mathf.Asin(Mathf.Sin(angleB * Mathf.Deg2Rad) * _speedRatio);
-            
+
             _offsetDirection = Quaternion.AngleAxis(-angleA * Mathf.Rad2Deg, _axis) * _direction;
         }
         else
@@ -85,15 +88,16 @@ public class CannonTower : Tower
         }
     }
 
-    protected override bool ShootCondition()
-    {
-        return base.ShootCondition() && _isTargeted;
-    }
 
     private void RecalculateConstants()
     {
         _speedRatio = _vision.CurrentTarget.Speed / _projectileSpeed;
         _axis = Vector3.Cross(_shootPoint.transform.position - _vision.CurrentTarget.transform.position, _vision.CurrentTarget.transform.forward).normalized;
+    }
+    
+    protected override bool ShootCondition()
+    {
+        return base.ShootCondition() && _isTargeted;
     }
 
     protected override void EmitProjectile()
